@@ -1,0 +1,27 @@
+{% extends "customer/base.html" %}
+{% load static %}
+{% block content %}
+<section id="hero" class="d-flex align-items-center">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+              {% if user.is_authenticated %}
+              <h3>Welcome, {{user.fullname}}</h3>
+              {% endif %}
+              <h1>Discover. Reserve. Relax. Your Perfect Stay Awaits!</h1>
+              <h2>Your Gateway to Seamless Hotel Booking</h2>
+              <div>
+                <a href="{% url "rooms" %}" class="btn-get-started scrollto">Book Now</a>
+              </div>
+            </div>
+            <div class="col-lg-6 order-1 order-lg-2 hero-img">
+              <img src="{% static "customer/img/hero-img.png" %}" class="img-fluid" alt="">
+            </div>
+          </div>
+        </div>
+    
+</section>
+{% endblock content %}
+
+
+

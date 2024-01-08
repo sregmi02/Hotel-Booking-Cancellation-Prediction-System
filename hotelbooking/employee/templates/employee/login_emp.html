@@ -1,0 +1,24 @@
+{% extends "employee/base_emp.html" %}
+{% block content %}
+<div id = "bgcolor">
+<div class = 'container'>
+    <div class = "col-md-4 offset-md-4">
+    <h1 class = 'col-md-6 offset-md-4'><strong>Login</strong></h1>
+    <br/>
+    <form method = 'POST' action = "{% url "login_emp" %}">
+        {% csrf_token %}
+        <div class="mb-3">
+          <input type="text" class="form-control" name = 'username' placeholder = 'Email'>
+        </div>
+        <br/>
+        <div class="mb-3">
+          <input type="password" class="form-control" name = 'password' placeholder = 'Password'>
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-get-started col-md-4 offset-md-4 ">Login</button><br/>
+        <br><h5 class = "col-12 text-auto">Don't have an account?<a href = "{% url "register_emp" %}"> Register Here </a></h5><br/>
+      </form>
+    </div>
+  </div>  
+    </div>
+    {% endblock content %}

@@ -1,0 +1,35 @@
+{% extends "customer/base.html" %}
+{% block content %}
+
+
+  <section id="portfolio-details" class="portfolio-details">
+    <div class="container">
+
+      <div class="row gy-4">
+
+        <div class="col-lg-8">
+            <div class="portfolio-details-slider">
+              <div class="wrapper align-items-center">
+                <div class="slide">
+                  <img src="{{room.image.url}}" alt="">
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        <div class="col-lg-4">
+          <div class="portfolio-info">
+            <h2>{{room.name}}</h2>
+            <p>
+              {{room.description}}
+            </p>
+          </div>
+          <br/><br/>
+          <a href = "{% url "booking_form" room.id  %}" class = "col-4 offset-4 btn btn-get-started scrollto">Book Room</a>
+        </div>
+      </div>
+    </section>
+{% endblock content %}
+
+

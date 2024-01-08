@@ -1,0 +1,74 @@
+{% extends "customer/base.html" %}
+{% block content %}
+<br/>
+<div class = "container">
+<div class="row">
+    <div class = "col">
+      <div class = "col">
+      <h3 class = 'text-center'><strong>Enter Booking Details</strong></h3>
+      </div>
+      <div class = "col-6 offset-3">
+        <form method = "POST">
+            {% csrf_token %}
+            {% for fields in form  %}
+            <p>{{fields.label_tag}}
+            {{fields}}</p>
+            {% for error in fields.errors  %}
+            <p class = "text-danger">{{error}}<p>
+            {% endfor %}
+            {% endfor %}
+            <p>Number of Rooms: <span id = "no_of_rooms">1</span> </p>
+            <p>Your Total: $<span id = "dynamic_price"></span> </p>
+            <button type = 'submit' class="btn btn-get-started col-4 offset-4">Book Room</button>
+          </form>
+        </div>
+    </div>
+  </div>
+</div>
+<script>
+    function updateRooms(){
+
+      var num_of_adults = parseInt(document.getElementById('id_no_of_adults').value);
+      var num_of_children = parseInt(document.getElementById('id_no_of_children').value);
+      if (num_of_adults > 0 && num_of_children >= 0){
+      var total = num_of_adults +  0.667*num_of_children
+      var total_rooms = Math.ceil((total/{{room.max_capacity}}));
+      document.getElementById('no_of_rooms').innerText =  total_rooms
+
+      return total_rooms;
+      }
+    }
+    document.getElementById('id_no_of_adults').addEventListener('input', updateRooms);
+    document.getElementById('id_no_of_children').addEventListener('input', updateRooms);
+    
+    function calculatePrice(){
+      var num_of_adults = parseInt(document.getElementById('id_no_of_adults').value);
+      var num_of_children = parseInt(document.getElementById('id_no_of_children').value);
+      if (num_of_adults > 0 && num_of_children >= 0){
+      var checkin_date = new Date(document.getElementById('id_checkin_date').value);
+      var base_price = parseFloat({{room.price}});
+      var arrival_month = checkin_date.getMonth()+1;
+      var price_multiplier = 1;
+      var rooms = updateRooms();
+      console.log(rooms);
+
+      if ([12,1,2].includes(arrival_month)){
+          price_multiplier = 1.5;
+      }else if ([3,4,5].includes(arrival_month)){
+          price_multiplier = 0.9
+      }else if ([6,7,8].includes(arrival_month)){
+          price_multiplier = 1.75
+      }else{
+          price_multiplier = 1
+      }
+      
+      var dynamic_price = (base_price*price_multiplier)*rooms;
+      document.getElementById('dynamic_price').innerText = dynamic_price;
+    }
+    }
+    document.getElementById('id_no_of_adults').addEventListener('input', calculatePrice);
+    document.getElementById('id_no_of_children').addEventListener('input', calculatePrice);
+    document.getElementById("id_arrival_date").addEventListener('input', calculatePrice);
+</script>
+
+{% endblock content %}

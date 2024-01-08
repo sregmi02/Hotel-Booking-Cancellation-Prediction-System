@@ -1,0 +1,58 @@
+#bgcolor {
+    background-color:#fef8f5;
+  }
+
+#navbarbg{
+  background-color:#fef8f5;
+}
+#nav {
+  height: 72px;
+  transition: all 0.5s;
+  z-index: 997;
+  transition: all 0.5s;
+  background: #fef8f5;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+}
+#nav .logo h1 {
+  font-size: 30px;
+  margin: 0;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 2px;
+}
+
+#nav .logo h1 a,
+#nav .logo h1 a:hover {
+  color: #7a6960;
+  text-decoration: none;
+}
+
+#nav .logo img {
+  padding: 0;
+  margin: 0;
+  max-height: 40px;
+}
+
+  .btn-get-started {
+    font-family: "Raleway", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 8px 8px;
+    border-radius: 3px;
+    transition: 0.5s;
+    margin-top: 15px;
+    color: #fff;
+    background: #eb5d1e;
+    
+  }
+  .btn-get-started:hover{
+    background: #ef7f4d;
+    color: #fff;
+  }
+
+  .navbar {
+    padding: 0;
+    background-color:#fef8f5;
+  }

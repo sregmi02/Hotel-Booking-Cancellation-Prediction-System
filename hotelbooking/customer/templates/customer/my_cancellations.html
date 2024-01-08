@@ -1,0 +1,35 @@
+{% extends "customer/base.html" %}
+{% block content %}
+<br/><br/>
+<div class = 'container'>
+<div class = 'col-md-8 offset-md-2'>
+    <br/><br/>
+    <h1 class = 'col-md-6 offset-md-3'>My Cancellations</h1>
+    <br/><br/>
+    {% if cancellations %}
+    <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">Booking ID</th>
+        <th scope="col">Room</th>
+        <th scope="col">Number of Rooms</th>
+        <th scope="col">Booking Date</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for cancellation in  cancellations  %}
+      <tr>
+        <th scope="row">{{cancellation.id}}</th>
+        <td>{{cancellation.room.name}}</td>
+        <td>{{cancellation.no_of_rooms}}</td>
+        <td>{{cancellation.booking_date}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <h3 class = 'col-md-6 offset-md-3'>No Cancellations Found</h3>
+  {% endif %}
+</div>
+</div>
+{% endblock content %}

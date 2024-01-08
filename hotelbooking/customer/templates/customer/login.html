@@ -1,0 +1,24 @@
+{% extends "customer/base.html" %}
+{% block content %}
+
+<br/><br/>
+<div id = "bgcolor">
+<div  class = 'container '>
+<div class = "col-md-4 offset-md-4">
+<br/><h1 class = 'col-md-6 offset-md-4'><strong>Login</strong></h1>
+<br/>
+<form method = 'POST' action = "{% url "login_user" %}">
+    {% csrf_token %}
+    <div class="mb-3">
+      <input type="text" class="form-control" name = 'username' placeholder = 'Email'>
+    </div>
+    <div class="mb-3">
+      <input type="password" class="form-control" name = 'password' placeholder = 'Password'>
+    </div>
+    <button type="submit" class="btn btn-get-started col-md-4 offset-md-4 ">Login</button>
+  </form>
+<br><h5 class = "col-12 text-auto">Don't have an account?<a href = "{% url "register_user" %}"> Register Here </a></h5><br/>
+</div>
+</div>
+</div>
+{% endblock content %}
