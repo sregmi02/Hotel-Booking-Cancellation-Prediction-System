@@ -28,6 +28,27 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, username, fullname, password, **extra_fields)
     
+    def customer_authenticate(self, username=None, password=None, **extra_fields):
+        if not username:
+            return None
+        
+        user = self.get_by_natural_key(username = username)
+
+        if user.check_password(password) and user.is_customer:
+            return user
+
+        return None
+    
+    def employee_authenticate(self, username=None, password=None, **extra_fields):
+        if not username:
+            return None
+        
+        user = self.get_by_natural_key(username = username)
+
+        if user.check_password(password) and user.is_employee:
+            return user
+
+        return None
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=255, unique = True)
@@ -139,7 +160,7 @@ class Booking(models.Model):
         self.dynamic_price = self.calculateprice()
         self.no_of_special_requests = self.calculate_special_requests()
         self.checkin_month = self.checkin_date.month
-        self.checkin_day = self.checkin_date.day + 1
+        self.checkin_day = self.checkin_date.day 
         if self.checked_in_status == 'False':
             self.status = False
             self.customer.previous_bookings_cancelled +=1

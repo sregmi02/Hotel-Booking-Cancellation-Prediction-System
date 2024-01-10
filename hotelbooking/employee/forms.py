@@ -51,3 +51,15 @@ class EmployeeLoginForm(AuthenticationForm):
         'username' : forms.TextInput(attrs={'class': 'form-control'}),
         'password' : forms.PasswordInput(attrs={'class': 'form-control'})
         }
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+
+        if username and password:
+            model = CustomUser
+            user = model.objects.employee_authenticate(username = username, password = password)
+
+            if user is None:
+                raise forms.ValidationError("Invalid Login Credentials for Customer")
+        return cleaned_data

@@ -7,7 +7,7 @@
 <div id = "bgcolor" class = "col">
 <div   class="container row g-2 col-6 offset-3 text-auto border border-3">
   <div class="col-md-6 offset-3">
-    <h2 class = "text-center"><strong>Booking Details</strong></h2><br/>
+    <h2 class = "col-md-12 text-center"><strong>Booking Details</strong></h2><br/>
    </div>
    <div class="col-md-6">
     <label for="room" class="form-label"><strong>Customer ID:</strong> {{booking.customer.id}}</label>
@@ -32,6 +32,9 @@
   </div>
   <div class="col-md-6">
     <label for="checkin" class="form-label"><strong>Check-in Month:</strong> {{booking.checkin_month}}</label>
+  </div>
+  <div class="col-md-6">
+    <label for="checkin" class="form-label"><strong>Check-in Date:</strong> {{booking.checkin_date}}</label>
   </div>
   <div class="col-md-6">
     <label for="checkout" class="form-label"><strong>Check-out Date:</strong> {{booking.checkout_date}}</label>
@@ -72,7 +75,7 @@
   <div class="col-md-6">
     <label for="parking" class="form-label"><strong>Price:</strong>{{booking.dynamic_price}}</label>
   </div>
-<div class="col-md-12">
+{% comment %} <div class="col-md-12">
     <form method = 'POST'>
     {% csrf_token %}
       {% for fields in form%}
@@ -85,7 +88,7 @@
 {% endif %}
       <button type = "submit" class = 'btn btn-primary'>Save Changes</button>
     </form>
-  </div> 
+  </div>  {% endcomment %}
   <div class = "col-md-4 offset-4">
   <form method="post" action="">
     {% csrf_token %}

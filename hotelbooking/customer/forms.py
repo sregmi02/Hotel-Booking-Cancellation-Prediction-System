@@ -33,6 +33,18 @@ class CustomerLoginForm(AuthenticationForm):
         'username' : forms.TextInput(attrs={'class': 'form-control'}),
         'password' : forms.PasswordInput(attrs={'class': 'form-control'})
         }
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+
+        if username and password:
+            model = CustomUser
+            user = model.objects.customer_authenticate(username = username, password = password)
+
+            if user is None:
+                raise forms.ValidationError("Invalid Login Credentials for Customer")
+        return cleaned_data
 
 class BookingForm(forms.ModelForm):
     
@@ -59,11 +71,16 @@ class BookingForm(forms.ModelForm):
         checkin_date = cleaned_data.get('checkin_date')
         checkout_date = cleaned_data.get('checkout_date')
         no_of_children = cleaned_data.get('no_of_children')
+        no_of_adults = cleaned_data.get('no_of_adults')
         if checkin_date and checkin_date < datetime.now().date():
             self.add_error("checkin_date","Checkin date cannot be in the past")
         if checkout_date and checkout_date < checkin_date:
             self.add_error("checkout_date","Checkout date must be at least 1 day after arrival date.")
         if no_of_children  < 0:
             self.add_error("no_of_children", "Number of Children cannot be negative")
+        if no_of_adults > 10:
+            self.add_error("no_of_adults", "This Value cannot be greater than 10")
+        if no_of_children > 10:
+            self.add_error("no_of_children", "This Value cannot be greater than 10")
             
         return cleaned_data
