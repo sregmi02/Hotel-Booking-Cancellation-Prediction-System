@@ -35,9 +35,9 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True, validators=[RegexValidator(regex=r'^\d+$', message='Phone number must contain only digits.')])
     is_customer = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
+    repeated_guest = models.BooleanField(null  = True, default = False)
     previous_bookings_not_cancelled = models.IntegerField(default=0)
     previous_bookings_cancelled = models.IntegerField(default=0)
-
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -80,6 +80,8 @@ class Booking(models.Model):
     no_of_adults = models.PositiveIntegerField(default = 1)
     no_of_children = models.IntegerField(default = 0)
     checkin_date = models.DateField(default = datetime.now().date())
+    checkin_month = models.IntegerField(null = True)
+    checkin_day = models.IntegerField(null = True)
     checkout_date = models.DateField(default = datetime.now().date() + timedelta(days=1))
     booking_date = models.DateField(default = datetime.now().date())
     no_of_days = models.IntegerField(blank = True, null = True)
@@ -136,12 +138,22 @@ class Booking(models.Model):
         self.weekend_nights = (self.no_of_days - self.weeknights) 
         self.dynamic_price = self.calculateprice()
         self.no_of_special_requests = self.calculate_special_requests()
+        self.checkin_month = self.checkin_date.month
+        self.checkin_day = self.checkin_date.day + 1
         if self.checked_in_status == 'False':
             self.status = False
             self.customer.previous_bookings_cancelled +=1
+            self.customer.save()
         elif self.checked_in_status == 'True':
             self.status = True
             self.customer.previous_bookings_not_cancelled +=1
+            self.customer.save()
+        if self.customer.previous_bookings_not_cancelled >= 1:
+            self.customer.repeated_guest = True
+            self.customer.save()
+        else:
+            self.customer.repeated_guest = False
+            self.customer.save()
         
         super().save(*args, **kwargs)
         

@@ -46,6 +46,10 @@
   <div class="col-md-6">
     <label for="parking" class="form-label"><strong>Previous Cancellations:</strong>{{booking.customer.previous_bookings_cancelled}}</label>
   </div>
+  <div class="col-md-6">
+    <a href = {% url "update_booking" booking.id %} class = "btn btn-get-started">Update Booking</a></label>
+  </div>
+  
 
 
 </div>

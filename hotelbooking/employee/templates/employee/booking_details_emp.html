@@ -28,7 +28,10 @@
     <label for="children" class="form-label"><strong>Number of Children:</strong> {{booking.no_of_children}}</label>
   </div>
   <div class="col-md-6">
-    <label for="checkin" class="form-label"><strong>Check-in Date:</strong> {{booking.checkin_date}}</label>
+    <label for="checkin" class="form-label"><strong>Check-in Day:</strong> {{booking.checkin_day}}</label>
+  </div>
+  <div class="col-md-6">
+    <label for="checkin" class="form-label"><strong>Check-in Month:</strong> {{booking.checkin_month}}</label>
   </div>
   <div class="col-md-6">
     <label for="checkout" class="form-label"><strong>Check-out Date:</strong> {{booking.checkout_date}}</label>
@@ -58,15 +61,18 @@
     <label for="weekendnights" class="form-label"><strong>Number of Weekend Nights:</strong>{{booking.weekend_nights}}</label>
   </div>
   <div class="col-md-6">
-    <label for="bookings" class="form-label"><strong>Number of Previous Bookings:</strong>{{booking.weekend_nights}}</label>
+    <label for="bookings" class="form-label"><strong>Number of Previous Bookings:</strong>{{booking.customer.previous_bookings_not_cancelled}}</label>
   </div>
   <div class="col-md-6">
-    <label for="cancelled" class="form-label"><strong>Number of Cancelled Bookings:</strong>{{booking.weekend_nights}}</label>
+    <label for="cancelled" class="form-label"><strong>Number of Cancelled Bookings:</strong>{{booking.customer.previous_bookings_cancelled}}</label>
+  </div>
+  <div class="col-md-6">
+    <label for="cancelled" class="form-label"><strong>Previous Customer:</strong>{{booking.customer.repeated_guest|yesno:'Yes,No'}}</label>
   </div>
   <div class="col-md-6">
     <label for="parking" class="form-label"><strong>Price:</strong>{{booking.dynamic_price}}</label>
   </div>
-  {% comment %} <div class="col-md-12">
+<div class="col-md-12">
     <form method = 'POST'>
     {% csrf_token %}
       {% for fields in form%}
@@ -79,7 +85,7 @@
 {% endif %}
       <button type = "submit" class = 'btn btn-primary'>Save Changes</button>
     </form>
-  </div> {% endcomment %}
+  </div> 
   <div class = "col-md-4 offset-4">
   <form method="post" action="">
     {% csrf_token %}

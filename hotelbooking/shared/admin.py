@@ -4,7 +4,7 @@ from .models import CustomUser, Room, Booking
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ['email', 'username', 'fullname', 'is_customer', 'is_employee','previous_bookings_cancelled']
+    list_display = ['email', 'username', 'fullname', 'is_customer', 'is_employee','previous_bookings_cancelled','repeated_guest']
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Room)
