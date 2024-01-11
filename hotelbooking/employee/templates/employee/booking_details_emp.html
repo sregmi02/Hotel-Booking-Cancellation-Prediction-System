@@ -90,7 +90,7 @@
     </form>
   </div>  {% endcomment %}
   <div class = "col-md-4 offset-4">
-  <form method="post" action="">
+  <form method="post" action="{% url "result" booking.id%}">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Predict</button>
 </form>

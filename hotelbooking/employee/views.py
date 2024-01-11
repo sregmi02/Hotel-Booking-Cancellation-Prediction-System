@@ -74,12 +74,17 @@ def booking_details_emp(request, pk):
     if request.method == 'POST':
         if form.is_valid():
             form.save()
+            print(booking.no_of_adults)  
             return redirect('home_emp')
     else:
-        form = BookingForm(instance = booking)   
+        form = BookingForm(instance = booking)  
     return render(request, 'employee/booking_details_emp.html', {'form':form, 'booking': booking})
 
 @login_required(login_url="login_emp")
 def customer_list(request):
     customer = CustomUser.objects.filter(is_customer = True)
     return render (request, 'employee/customer_list.html', {'customer':customer})
+
+def result(request, pk):
+    booking = Booking.objects.get(id = pk)
+    return render (request, 'employee/result.html', {})
