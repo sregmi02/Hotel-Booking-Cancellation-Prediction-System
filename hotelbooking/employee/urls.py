@@ -9,5 +9,6 @@ urlpatterns = [
     path('processed_bookings/', views.processed_bookings, name = 'processed_bookings'),
     path('confirmed_bookings/', views.confirmed_bookings, name = 'confirmed_bookings'),
     path('cancelled_bookings/', views.cancelled_bookings, name = 'cancelled_bookings'),
-    path('booking_details_emp/<int:pk>', views.booking_details_emp, name = 'booking_details_emp')
+    path('booking_details_emp/<int:pk>', views.booking_details_emp, name = 'booking_details_emp'),
+    path('result/<int:pk>', views.result, name = 'result')
 ]
