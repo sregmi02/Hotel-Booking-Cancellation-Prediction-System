@@ -7,9 +7,10 @@ from shared.models import Booking
 from django.contrib.auth.decorators import login_required
 from employee.forms import BookingForm
 import pickle 
-from .random_forest import RandomForest
-
 import pandas as pd
+import sys
+sys.path.append(r'C:/Users/lenovo/Desktop/PredictionPickled/Hotel-Booking-Cancellation-Prediction-System/model')
+
 # Create your views here.
 def home_emp(request):
     return render(request, 'employee/home_emp.html', {})
@@ -92,7 +93,7 @@ def getPredictions(no_of_adults, no_of_children, no_of_weekend_nights, no_of_wee
                    required_car_parking_space, room_type_reserved, arrival_month, arrival_date,
                    repeated_guest, no_of_previous_cancellations , no_of_previous_bookings_not_canceled,
                    no_of_special_requests, lead_time, avg_price_per_room):
-    model = pickle.load(open("ml_model.tm","rb"))
+    model = pickle.load(open("ml_model","rb"))
     data = {
         'no_of_adults':no_of_adults,
         'no_of_children':no_of_children,
@@ -110,9 +111,9 @@ def getPredictions(no_of_adults, no_of_children, no_of_weekend_nights, no_of_wee
         'lead_time':lead_time,
         'avg_price_per_room':avg_price_per_room
     }
-    X_test = pd.DataFrame(data)
+    X_test = pd.DataFrame(data,index=[0])
     X_pass = X_test.to_numpy()
-    prediction = model.predict(X_pass)
+    prediction = model.predict(X_pass,n_features = X_test.columns)
     if prediction == 0:
         return 'unlikely to cancel'
     elif prediction == 1:
@@ -156,5 +157,6 @@ def result(request,pk):
                    required_car_parking_space, room_type_reserved, arrival_month, arrival_date,
                    repeated_guest, no_of_previous_cancellations , no_of_previous_bookings_not_canceled,
                    no_of_special_requests, lead_time, avg_price_per_room)
+    print(result)
 
-    return render(request, 'employee/booking_details_emp.html', {'result':result})
+    return render(request, 'employee/result.html', {'result':result})
