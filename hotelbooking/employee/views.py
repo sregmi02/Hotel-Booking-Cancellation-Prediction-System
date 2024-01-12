@@ -7,9 +7,9 @@ from shared.models import Booking
 from django.contrib.auth.decorators import login_required
 from employee.forms import BookingForm
 import pickle 
-from .random_forest import RandomForest
-
 import pandas as pd
+import numpy as np
+from .random_forest import RandomForest
 # Create your views here.
 def home_emp(request):
     return render(request, 'employee/home_emp.html', {})
@@ -89,16 +89,11 @@ def customer_list(request):
     customer = CustomUser.objects.filter(is_customer = True)
     return render (request, 'employee/customer_list.html', {'customer':customer})
 
-<<<<<<< HEAD
-def result(request, pk):
-    booking = Booking.objects.get(id = pk)
-    return render (request, 'employee/result.html', {})
-=======
 def getPredictions(no_of_adults, no_of_children, no_of_weekend_nights, no_of_week_nights, type_of_meal_plan,
                    required_car_parking_space, room_type_reserved, arrival_month, arrival_date,
                    repeated_guest, no_of_previous_cancellations , no_of_previous_bookings_not_canceled,
                    no_of_special_requests, lead_time, avg_price_per_room):
-    model = pickle.load(open("ml_model.tm","rb"))
+    model = pickle.load(open("ml_model","rb"))
     data = {
         'no_of_adults':no_of_adults,
         'no_of_children':no_of_children,
@@ -164,4 +159,4 @@ def result(request,pk):
                    no_of_special_requests, lead_time, avg_price_per_room)
 
     return render(request, 'employee/booking_details_emp.html', {'result':result})
->>>>>>> b4b8320c5ad414f43c1f146000c90bd4b96bc88a
+

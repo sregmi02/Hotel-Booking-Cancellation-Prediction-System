@@ -1,8 +1,8 @@
 import pickle
 import pandas as pd 
 import numpy as np 
-from .decision_tree import DecisionTree
-from .random_forest import RandomForest
+from decision_tree import DecisionTree
+from random_forest import RandomForest
 from sklearn.model_selection import train_test_split
 
 #loading  processed dataset
@@ -22,4 +22,4 @@ clf = RandomForest(n_features = X.columns)
 clf.train_model(X_train, y_train)
 
 #pickling the model
-pickle.dump(clf,open("ml_model.tm","wb"))
+pickle.dump(clf,open("ml_model","wb"))
