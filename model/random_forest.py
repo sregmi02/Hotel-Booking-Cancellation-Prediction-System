@@ -52,4 +52,5 @@ class RandomForest:
         for preds in labels:
             counter = Counter(preds)
             predictions.append(counter.most_common(1)[0][0])
-        return predictions
+        pred = int(predictions[0])
+        return pred

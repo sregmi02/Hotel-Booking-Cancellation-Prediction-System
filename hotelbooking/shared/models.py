@@ -161,6 +161,8 @@ class Booking(models.Model):
         self.no_of_special_requests = self.calculate_special_requests()
         self.checkin_month = self.checkin_date.month
         self.checkin_day = self.checkin_date.day 
+        if self.status == False:
+            self.customer.previous_bookings_cancelled +=1
         if self.checked_in_status == 'False':
             self.status = False
             self.customer.previous_bookings_cancelled +=1

@@ -18,6 +18,6 @@ def main():
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
-    from employee.random_forest import RandomForest
-    main()   
+if __name__ == '__main__':    
+    main()
+

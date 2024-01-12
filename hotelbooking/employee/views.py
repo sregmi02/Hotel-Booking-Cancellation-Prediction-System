@@ -8,8 +8,9 @@ from django.contrib.auth.decorators import login_required
 from employee.forms import BookingForm
 import pickle 
 import pandas as pd
-import numpy as np
-from .random_forest import RandomForest
+import sys
+sys.path.append(r'C:\Users\sssre\Documents\CSIT VII\Final Year Project\model')
+
 # Create your views here.
 def home_emp(request):
     return render(request, 'employee/home_emp.html', {})
@@ -111,9 +112,9 @@ def getPredictions(no_of_adults, no_of_children, no_of_weekend_nights, no_of_wee
         'lead_time':lead_time,
         'avg_price_per_room':avg_price_per_room
     }
-    X_test = pd.DataFrame(data)
+    X_test = pd.DataFrame(data,index=[0])
     X_pass = X_test.to_numpy()
-    prediction = model.predict(X_pass)
+    prediction = model.predict(X_pass,n_features = X_test.columns)
     if prediction == 0:
         return 'unlikely to cancel'
     elif prediction == 1:
@@ -157,6 +158,7 @@ def result(request,pk):
                    required_car_parking_space, room_type_reserved, arrival_month, arrival_date,
                    repeated_guest, no_of_previous_cancellations , no_of_previous_bookings_not_canceled,
                    no_of_special_requests, lead_time, avg_price_per_room)
+    print(result)
 
-    return render(request, 'employee/booking_details_emp.html', {'result':result})
+    return render(request, 'employee/result.html', {'result':result})
 

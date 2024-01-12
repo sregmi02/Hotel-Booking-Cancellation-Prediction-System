@@ -83,7 +83,7 @@ class DecisionTree:
                             "information_gain":information_gain
                         }
                         best_information_gain = information_gain
-                        print("Splitted Column:{0}".format(self.n_features[best_split['feature_index']]))
+        print("Splitted Column:{0}".format(self.n_features[best_split['feature_index']]))
         return best_split
     
     def _grow_tree(self, X, y, depth=0):
@@ -133,7 +133,8 @@ class DecisionTree:
               
               
     def _predict(self,x,tree):
-        if tree.value !=None:
+        if tree.value != None:
+            print(int(tree.value))
             return tree.value
         feature = x[tree.feature]
         #print("Tree Feature:{0}".format(tree.feature))
@@ -150,4 +151,3 @@ class DecisionTree:
         self.n_features = n_features
         return [self._predict(x,self.root) for x in X]
     
-              
