@@ -3,6 +3,7 @@ from shared.models import CustomUser
 from .forms import EmployeeLoginForm, EmployeeRegistrationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
+from customer.models import PendingAlert
 from shared.models import Booking
 from django.contrib.auth.decorators import login_required
 from employee.forms import BookingForm
@@ -59,7 +60,7 @@ def pending_bookings(request):
 
 @login_required(login_url="login_emp")
 def processed_bookings(request):
-    bookings = Booking.objects.filter(processed = True)
+    bookings = Booking.objects.filter(processed = True, status = None)
     return render(request, 'employee/processed_bookings.html', {'bookings':bookings})
 
 @login_required(login_url="login_emp")
@@ -75,15 +76,15 @@ def cancelled_bookings(request):
 @login_required(login_url="login_emp")
 def booking_details_emp(request, pk):
     booking = Booking.objects.get(id = pk)
-    form = BookingForm(request.POST, instance = booking)
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            print(booking.no_of_adults)  
-            return redirect('home_emp')
-    else:
-        form = BookingForm(instance = booking)  
-    return render(request, 'employee/booking_details_emp.html', {'form':form, 'booking': booking})
+    # form = BookingForm(request.POST, instance = booking)
+    # if request.method == 'POST':
+    #     if form.is_valid():
+    #         form.save()
+    #         print(booking.no_of_adults)  
+    #         return redirect('home_emp')
+    # else:
+    #     form = BookingForm(instance = booking)  
+    return render(request, 'employee/booking_details_emp.html', {'booking': booking})
 
 @login_required(login_url="login_emp")
 def customer_list(request):
@@ -158,7 +159,31 @@ def result(request,pk):
                    required_car_parking_space, room_type_reserved, arrival_month, arrival_date,
                    repeated_guest, no_of_previous_cancellations , no_of_previous_bookings_not_canceled,
                    no_of_special_requests, lead_time, avg_price_per_room)
+    if result == 'unlikely to cancel':
+        booking.prediction_status = False
+        booking.advance = 0.25*booking.dynamic_price
+    elif result == 'likely to cancel':
+        booking.prediction_status = True
+        booking.advance = 0.5*booking.dynamic_price
+    booking.processed = True
+    PendingAlert.objects.create(customer = booking.customer, message = f"Your Booking (ID: {booking.id}) has been processed. Please proceed to payment.")
+    booking.save()
+    
     print(result)
-
     return render(request, 'employee/result.html', {'result':result})
 
+def checkin_booking(request, pk):
+    booking = Booking.objects.get(id = pk)
+    booking.status = True
+    booking.processed = True
+    booking.save()
+    messages.success(request, f'Booking (ID: {booking.id}) by {booking.customer.fullname} added to Confirmed Bookings')
+    return redirect('confirmed_bookings')
+
+def not_checkin_booking(request, pk):
+    booking = Booking.objects.get(id = pk)
+    booking.status = False
+    booking.processed = True
+    booking.save()
+    messages.success(request, f'Booking (ID: {booking.id}) by {booking.customer.fullname} added to Cancelled Bookings')
+    return redirect('cancelled_bookings')

@@ -3,7 +3,7 @@
 <div class = 'container'>
     <br/><br/>
     <div class = "row">
-    <div class = 'col-4 offset-4'><h1>Processed Bookings</h1></div>
+    <div class = 'text-center'><h1>Processed Bookings</h1></div>
     </div>
     <br/><br/>
     <div class = "row">
@@ -16,6 +16,7 @@
         <th scope ="col">Customer Name</th>
         <th scope="col">Room</th>
         <th scope="col">Booking Date</th>
+        <th scope="col">Check In</th>
       </tr>
     </thead>
     <tbody>
@@ -26,6 +27,35 @@
         <td>{{booking.customer.fullname}}</td>
         <td>{{booking.room.name}}</td>
         <td>{{booking.booking_date}}</td>
+        <td>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Checked In Status
+          </button>
+        
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Checked-in Status</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Has the user checked-in?
+                </div>
+                <div class="modal-footer">
+                  <form method="post" action="{% url 'not_checkin_booking' booking.id %}">
+                    {% csrf_token %}
+                    <button id = "cancelbtn" type="submit" class="btn btn-danger col-md-12">No</button>
+                  </form>
+                  <form method="post" action="{% url 'checkin_booking' booking.id %}">
+                    {% csrf_token %}
+                    <button id = "cancelbtn" type="submit" class="btn btn-primary col-md-12">Yes</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
       </tr>
       {% endfor %}
     </tbody>

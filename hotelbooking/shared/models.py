@@ -120,9 +120,10 @@ class Booking(models.Model):
     no_of_special_requests = models.IntegerField(null = True)
     dynamic_price = models.DecimalField(max_digits = 10, decimal_places = 2, null = True)
     status = models.BooleanField(null = True)
+    advance = models.DecimalField(max_digits = 10, decimal_places = 2, null = True)
     processed = models.BooleanField(default = False)
-    checked_in_status = models.CharField(null = True,max_length = 20, choices = CheckedInStatus)
-    prediction_status = models.BooleanField(null = True)
+    checked_in_status = models.BooleanField(default = None, null = True)
+    prediction_status = models.BooleanField(default = None, null = True)
 
     def calculateprice(self):
         price = float(self.room.price)
@@ -163,12 +164,8 @@ class Booking(models.Model):
         self.checkin_day = self.checkin_date.day 
         if self.status == False:
             self.customer.previous_bookings_cancelled +=1
-        if self.checked_in_status == 'False':
-            self.status = False
-            self.customer.previous_bookings_cancelled +=1
             self.customer.save()
-        elif self.checked_in_status == 'True':
-            self.status = True
+        if self.status == True:
             self.customer.previous_bookings_not_cancelled +=1
             self.customer.save()
         if self.customer.previous_bookings_not_cancelled >= 1:

@@ -36,6 +36,14 @@
   </div>
   {% endfor %}
   {% endif %}
+  {% if pending_alerts %}
+  {% for alert in pending_alerts%}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{alert}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
   {% block content %}
   {% endblock content %}
 

@@ -75,6 +75,11 @@
   <div class="col-md-6">
     <label for="parking" class="form-label"><strong>Price:</strong>{{booking.dynamic_price}}</label>
   </div>
+  {%if  booking.processed == True%}
+  <div class="col-md-6">
+    <label for="parking" class="form-label"><strong>Likely to Cancel:</strong>{{booking.prediction_status|yesno:"Yes,No"}}</label>
+  </div>
+  {% endif %}
 {% comment %} <div class="col-md-12">
     <form method = 'POST'>
     {% csrf_token %}
@@ -89,6 +94,7 @@
       <button type = "submit" class = 'btn btn-primary'>Save Changes</button>
     </form>
   </div>  {% endcomment %}
+{% if booking.processed == False and booking.status == None%}
   <div class = "col-md-4 offset-4">
 
   <form method="post" action="{% url 'result' booking.id %}">
@@ -97,6 +103,7 @@
     <button type="submit" class="btn btn-danger">Predict</button>
 </form>
 </div>
+{% endif %}
 <br/><br/>
 
 </div>

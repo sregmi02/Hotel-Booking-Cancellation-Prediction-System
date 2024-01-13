@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from shared.models import Room, Booking, CustomUser
 from django.contrib import messages
+from .models import PendingAlert
 from django.contrib.auth import login, authenticate, logout
 from .forms import CustomerLoginForm, CustomerRegistrationForm, BookingForm
 from django.contrib.auth.decorators import login_required
@@ -22,7 +23,6 @@ def login_user(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, 'Logged In')
             return redirect('home_user')
         else:
             messages.success(request, "username or password incorrect")
@@ -101,10 +101,16 @@ def booking_form(request, pk):
         form = BookingForm()
     return render(request, 'customer/booking_form.html', {'room':room, 'form':form})
 @login_required(login_url="login_user")
-def my_bookings(request):
+def requested_bookings(request):
     customer = request.user
-    bookings = Booking.objects.filter(customer = customer, status = None)
-    return render(request, 'customer/my_bookings.html', {'bookings':bookings})
+    bookings = Booking.objects.filter(customer = customer, status = None, processed = False)
+    return render(request, 'customer/request_bookings.html', {'bookings':bookings})
+
+@login_required(login_url="login_user")
+def pending_payments(request):
+    customer = request.user
+    bookings = Booking.objects.filter(customer = customer, status = None, processed = True)
+    return render(request, 'customer/pending_payments.html', {'bookings':bookings})
 
 @login_required(login_url="login_user")
 def booking_details(request, pk):
