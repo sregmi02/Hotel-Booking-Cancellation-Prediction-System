@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
 from django.core.validators import RegexValidator
 from datetime import datetime, timedelta
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, fullname, password=None, phone_number=None, **extra_fields):
         if not email:
@@ -84,11 +86,11 @@ class Booking(models.Model):
         ('Meal Plan 3', 'Dinner, Breakfast, and Lunch'),
     )
     Branch = (
-        ('Branch 1', 'Branch 1'),
-        ('Branch 2', 'Branch 2'),
-        ('Branch 3', 'Branch 3'),
-        ('Branch 4', 'Branch 4'),
-        ('Branch 5', 'Branch 5'),
+        ('Branch 1', 'Portugal'),
+        ('Branch 2', 'Barcelona'),
+        ('Branch 3', 'Lisbon'),
+        ('Branch 4', 'Seville'),
+        ('Branch 5', 'Valencia'),
     )
     CheckedInStatus = (
         ('True','Checked In'),
@@ -122,15 +124,16 @@ class Booking(models.Model):
     status = models.BooleanField(null = True)
     advance = models.DecimalField(max_digits = 10, decimal_places = 2, null = True)
     processed = models.BooleanField(default = False)
+    paid = models.BooleanField(default = False)
     checked_in_status = models.BooleanField(default = None, null = True)
     prediction_status = models.BooleanField(default = None, null = True)
-
+    stripe_checkout_id = models.CharField(max_length = 500, null = True)
     def calculateprice(self):
         price = float(self.room.price)
         arrival_month = self.checkin_date.month
 
         if arrival_month in [12,1,2]:
-            price_multiplier = 1.5
+            price_multiplier = 1
         elif arrival_month in [3,4,5]:
             price_multiplier = 0.9
         elif arrival_month in [6,7,8]:
@@ -180,4 +183,4 @@ class Booking(models.Model):
         
     
     def __str__(self):
-        return f'{self.room} by {self.customer.username}' 
+        return f'{self.room} by {self.customer.username}'

@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from shared.models import Room, Booking, CustomUser
 from django.contrib import messages
+import stripe
+from django.conf import settings
 from .models import PendingAlert
 from django.contrib.auth import login, authenticate, logout
 from .forms import CustomerLoginForm, CustomerRegistrationForm, BookingForm
@@ -23,6 +25,11 @@ def login_user(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            messages.success(request, "Logged In")
+            customer = request.user
+            bookings = Booking.objects.filter(customer = customer, status = None, processed = True, paid = False)
+            if (bookings):
+                messages.success(request, "You Have Pending Payments")
             return redirect('home_user')
         else:
             messages.success(request, "username or password incorrect")
@@ -109,7 +116,7 @@ def requested_bookings(request):
 @login_required(login_url="login_user")
 def pending_payments(request):
     customer = request.user
-    bookings = Booking.objects.filter(customer = customer, status = None, processed = True)
+    bookings = Booking.objects.filter(customer = customer, status = None, processed = True, paid = False)
     return render(request, 'customer/pending_payments.html', {'bookings':bookings})
 
 @login_required(login_url="login_user")
@@ -143,8 +150,48 @@ def update_booking(request, pk):
             if form.is_valid():
                 form.save()
                 messages.success(request, ("Successfully Updated"))
-                return redirect('my_bookings')
+                return redirect('requested_bookings')
         else:
             form = BookingForm(instance = booking)
         return render(request, 'customer/update_booking.html', {'form': form, 'booking': booking})
-     
+
+
+stripe.api_key = settings.API_KEY
+DOMAIN_URL = 'http://127.0.0.1:8000'
+@login_required(login_url="login_user")
+def payment(request, pk):
+    booking = Booking.objects.get(id = pk)
+    print(booking.advance)
+    if request.method == 'POST':
+            product = stripe.Product.create(name = booking.room.name)
+            product_price = stripe.Price.create(
+                product = product, unit_amount = int(booking.advance * 100), currency = 'eur'
+            )
+            customer = stripe.Customer.create(name = request.user.fullname, email = request.user.email)
+
+            stripe_checkout_session  = stripe.checkout.Session.create(
+                #ui_mode = "embedded",
+                line_items=[
+                    {"price": product_price,
+                     "quantity": 1}],
+                success_url= DOMAIN_URL + "/payment_success?session_id={CHECKOUT_SESSION_ID}&pk="+str(pk),
+                cancel_url= DOMAIN_URL + "/payment_failed",
+                mode = 'payment',
+                customer = customer.stripe_id,
+            )
+
+            return redirect(to=stripe_checkout_session.url)
+    return render(request, 'customer/payment.html', {'booking':booking})
+
+def payment_success(request):
+    stripe_session = stripe.checkout.Session.retrieve(request.GET.get("session_id"))
+    booking = Booking.objects.get(id = int(request.GET.get("pk")))
+    customer = stripe.Customer.retrieve(stripe_session.customer)
+    booking.stripe_checkout_id = request.GET.get('session_id')
+    booking.paid = True
+    booking.save()
+    return render(request, 'customer/payment_success.html', {'customer':customer})
+
+
+def payment_failed(request):
+    return render(request, 'customer/payment_failed.html', {})

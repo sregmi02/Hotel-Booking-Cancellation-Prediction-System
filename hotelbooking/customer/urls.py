@@ -15,5 +15,7 @@ urlpatterns = [
     path('update_booking/<int:pk>', views.update_booking, name = 'update_booking'),
     path('booking_form/<int:pk>',views.booking_form, name = "booking_form"),
     path('pending_payments/',views.pending_payments, name = "pending_payments"),
-    
+    path('payment/<int:pk>',views.payment, name = 'payment'),
+    path('payment_success', views.payment_success, name = 'payment_success'),
+    path('payment_failed', views.payment_failed, name = 'payment_failed'),
 ]

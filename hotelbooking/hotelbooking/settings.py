@@ -128,3 +128,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'shared.CustomUser'
+
+API_KEY = "sk_test_51OckETH1thVtgzmx3ht2jBH3vwLjGfbHWvcVru24gfxG4PagFvS5kpPvx75ICJFM1MmkD2aVmEPl2vGeVJTc96e700fHkFFnaG"

@@ -13,5 +13,4 @@ urlpatterns = [
     path('result/<int:pk>', views.result, name = 'result'),
     path('checkin/<int:pk>', views.checkin_booking, name = 'checkin_booking'),
     path('notcheckin/<int:pk>', views.not_checkin_booking, name = 'not_checkin_booking'),
-
 ]

@@ -140,7 +140,22 @@ def result(request,pk):
         required_car_parking_space = 1
     else:
         required_car_parking_space = 0
-    room_type_reserved = 0
+    if booking.room.name == "Standard Room":
+        room_type_reserved = 0
+    if booking.room.name == "Deluxe Room":
+        room_type_reserved = 1
+    if booking.room.name == "Suite":
+        room_type_reserved = 2
+    if booking.room.name == "Economy":
+        room_type_reserved = 3
+    if booking.room.name == "Heritage Room":
+        room_type_reserved = 4
+    if booking.room.name == "Villa":
+        room_type_reserved = 5
+    if booking.room.name == "Executive Room":
+        room_type_reserved = 6
+        
+
     arrival_month = int(booking.checkin_month)
     arrival_date = int(booking.checkin_day)
     if booking.customer.repeated_guest == True:
@@ -161,10 +176,10 @@ def result(request,pk):
                    no_of_special_requests, lead_time, avg_price_per_room)
     if result == 'unlikely to cancel':
         booking.prediction_status = False
-        booking.advance = 0.25*booking.dynamic_price
+        booking.advance = 0.25*float(booking.dynamic_price)
     elif result == 'likely to cancel':
         booking.prediction_status = True
-        booking.advance = 0.5*booking.dynamic_price
+        booking.advance = 0.5*float(booking.dynamic_price)
     booking.processed = True
     PendingAlert.objects.create(customer = booking.customer, message = f"Your Booking (ID: {booking.id}) has been processed. Please proceed to payment.")
     booking.save()
