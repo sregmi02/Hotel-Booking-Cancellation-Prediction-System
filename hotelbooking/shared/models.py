@@ -59,6 +59,7 @@ class CustomUser(AbstractUser):
     is_customer = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
     repeated_guest = models.BooleanField(null  = True, default = False)
+    pending_status = models.BooleanField(default = False, null = True)
     previous_bookings_not_cancelled = models.IntegerField(default=0)
     previous_bookings_cancelled = models.IntegerField(default=0)
     objects = CustomUserManager()
@@ -67,7 +68,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['username', 'fullname']
 
     def __str__(self):
-        return self.username
+        return f"{self.username}"
     
 class Room(models.Model):
     name = models.CharField(max_length=50)

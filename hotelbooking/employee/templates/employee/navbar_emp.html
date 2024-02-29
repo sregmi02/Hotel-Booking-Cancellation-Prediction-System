@@ -2,14 +2,13 @@
     <div class="container d-flex align-items-center justify-content-between">
 
       <div class="logo">
-        <h1 class="text-light"><a href="{% url "home_emp" %}"><span>Employee Dashboard</span></a></h1>
+        <h1 class="text-light"><a href="{% url "pending_bookings" %}"><span>Employee Dashboard</span></a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
       </div>
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link scrollto active" href="{% url "home_emp" %}">Home</a></li>
           {% if user.is_authenticated and user.is_employee%}
           <li><a class="nav-link scrollto" href="{% url "pending_bookings" %}">Pending Bookings</a></li>
           <li><a class="nav-link scrollto" href="{% url "processed_bookings" %}">Processed Bookings</a></li>

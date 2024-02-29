@@ -76,8 +76,8 @@
     <label for="parking" class="form-label"><strong>Price:</strong>{{booking.dynamic_price}}</label>
   </div>
   {%if  booking.processed == True%}
-  <div class="col-md-6">
-    <label for="parking" class="form-label"><strong>Likely to Cancel:</strong>{{booking.prediction_status|yesno:"Yes,No"}}</label>
+  <div class="col-md-6 offset-3">
+    <h3><strong>{{booking.prediction_status|yesno:"'Likely to Cancel','Unikely to Cancel'"}}</strong></h3>
   </div>
   {% endif %}
 {% comment %} <div class="col-md-12">

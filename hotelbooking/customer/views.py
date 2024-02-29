@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from shared.models import Room, Booking, CustomUser
 from django.contrib import messages
 import stripe
+from .decorators import customer_required
 from django.conf import settings
 from .models import PendingAlert
 from django.contrib.auth import login, authenticate, logout
@@ -14,7 +15,7 @@ def home(request):
 def about(request):
     return render(request, 'customer/about.html', {})
 
-@login_required(login_url="login_user")
+@customer_required
 def rooms(request):
         rooms = Room.objects.all()
         return render(request, 'customer/rooms.html', {'rooms': rooms })
@@ -62,15 +63,15 @@ def register_user(request):
         form = CustomerRegistrationForm()
     return render(request, 'customer/register.html', {'form': form})
 
-@login_required(login_url="login_user")
+@customer_required
 def room(request, pk):
     room = Room.objects.get(id=pk)
     return render(request, 'customer/room.html', {'room':room})
   
-@login_required(login_url="login_user")
+@customer_required
 def booking_form(request, pk):
     room = Room.objects.get(id = pk)
-    customer = request.user  
+    customer = request.user
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
@@ -102,46 +103,67 @@ def booking_form(request, pk):
                 airport_pickup = airport_pickup,
                 wheelchair = wheelchair,
                 )
+            customer.pending_status = True
+            customer.save()
             messages.success(request, "Booking Request Sent")
             return redirect('home_user')
     else:
         form = BookingForm()
-    return render(request, 'customer/booking_form.html', {'room':room, 'form':form})
-@login_required(login_url="login_user")
+    return render(request, 'customer/booking_form.html', {'room':room, 'form':form, 'customer': customer})
+
+@customer_required
 def requested_bookings(request):
     customer = request.user
     bookings = Booking.objects.filter(customer = customer, status = None, processed = False)
-    return render(request, 'customer/request_bookings.html', {'bookings':bookings})
+    print(customer.pending_status)
+    return render(request, 'customer/request_bookings.html', {'bookings':bookings, 'customer': customer})
 
-@login_required(login_url="login_user")
+@customer_required
 def pending_payments(request):
     customer = request.user
     bookings = Booking.objects.filter(customer = customer, status = None, processed = True, paid = False)
     return render(request, 'customer/pending_payments.html', {'bookings':bookings})
 
-@login_required(login_url="login_user")
+@customer_required
+def completed_payments(request):
+    customer = request.user
+    bookings = Booking.objects.filter(customer = customer, paid = True, status = None)
+    return render(request, 'customer/completed_payments.html', {'bookings':bookings})
+
+@customer_required
 def booking_details(request, pk):
     booking = Booking.objects.get(id = pk)
     return render(request, 'customer/booking_details.html', {'booking':booking})
 
-@login_required(login_url="login_user")
+@customer_required
 def my_cancellations(request):
     customer = request.user
     cancellations = Booking.objects.filter(customer = customer, status = False)
     return render(request, 'customer/my_cancellations.html', {'cancellations':cancellations})
 
-@login_required(login_url="login_user")
+@customer_required
 def cancel_booking(request, pk):
     booking = Booking.objects.get(id = pk)
     if booking.customer == request.user:
+        print(booking.id)
         booking.status = False
         customer = request.user
         customer.previous_bookings_cancelled += 1
         customer.save()
         booking.save()
-    return redirect('my_bookings')
+        if booking.paid == False:
+            customer.pending_status = False
+            customer.save()
+        print(customer.pending_status)
+        messages.success(request, f"Booking {booking.id} Cancelled")
+    if request.META.get('HTTP_REFERER').endswith('/my_bookings/'):
+        return redirect('requested_bookings')  # Redirect to the paid bookings page
+    elif request.META.get('HTTP_REFERER').endswith('/pending_payments/'):
+        return redirect('pending_payments')
+    elif request.META.get('HTTP_REFERER').endswith('/completed_payments/'):
+        return redirect('completed_payments')
 
-@login_required(login_url="login_user")
+@customer_required
 def update_booking(request, pk):
     booking = get_object_or_404(Booking, id = pk)
     if booking.customer == request.user:
@@ -158,7 +180,7 @@ def update_booking(request, pk):
 
 stripe.api_key = settings.API_KEY
 DOMAIN_URL = 'http://127.0.0.1:8000'
-@login_required(login_url="login_user")
+@customer_required
 def payment(request, pk):
     booking = Booking.objects.get(id = pk)
     print(booking.advance)
@@ -183,6 +205,7 @@ def payment(request, pk):
             return redirect(to=stripe_checkout_session.url)
     return render(request, 'customer/payment.html', {'booking':booking})
 
+@customer_required
 def payment_success(request):
     stripe_session = stripe.checkout.Session.retrieve(request.GET.get("session_id"))
     booking = Booking.objects.get(id = int(request.GET.get("pk")))
@@ -190,6 +213,9 @@ def payment_success(request):
     booking.stripe_checkout_id = request.GET.get('session_id')
     booking.paid = True
     booking.save()
+    customer1 = request.user
+    customer1.pending_status = False
+    customer1.save()
     return render(request, 'customer/payment_success.html', {'customer':customer})
 
 

@@ -16,6 +16,7 @@
         <th scope ="col">Customer Name</th>
         <th scope="col">Room</th>
         <th scope="col">Booking Date</th>
+        <th scope="col">Checkin Date</th>
         <th scope="col">Check In</th>
       </tr>
     </thead>
@@ -27,20 +28,21 @@
         <td>{{booking.customer.fullname}}</td>
         <td>{{booking.room.name}}</td>
         <td>{{booking.booking_date}}</td>
+        <td>{{booking.checkin_date}}</td>
         <td>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Checked In Status
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{booking.id}}">
+            Confirm
           </button>
         
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade" id="exampleModal{{booking.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{booking.id}}" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Checked-in Status</h1>
+                  <h1 class="modal-title fs-5" id="exampleModalLabel{{booking.id}}">Confirm Checked-in Status</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  Has the user checked-in?
+                  Has the customer checked-in?
                 </div>
                 <div class="modal-footer">
                   <form method="post" action="{% url 'not_checkin_booking' booking.id %}">

@@ -32,9 +32,6 @@
     <label for="meal" class="form-label"><strong>Meal Plan:</strong> {{booking.meal_plan}}</label>
   </div>
   <div class="col-md-6">
-    <label for="branch" class="form-label"><strong>Branch:</strong> {{booking.branch}}</label>
-  </div>
-  <div class="col-md-6">
     <label for="numberofrooms" class="form-label"><strong>Number of Rooms:</strong> {{booking.no_of_rooms}}</label>
   </div>
   <div class="col-md-6">
@@ -47,8 +44,18 @@
     <label for="parking" class="form-label"><strong>Previous Cancellations:</strong>{{booking.customer.previous_bookings_cancelled}}</label>
   </div>
   <div class="col-md-6">
+    <label for="parking" class="form-label"><strong>Payment Status: </strong>{{booking.paid|yesno:"Paid,Not Paid"}}</label>
+  </div>
+  <div class="col-md-6">
+    <label for="parking" class="form-label"><strong>Active Booking: </strong>{{booking.customer.pending_status|yesno:"Yes,No"}}</label>
+  </div>
+  
+{% if booking.paid == False %}
+  <div class="col-12">
     <a href = {% url "update_booking" booking.id %} class = "btn btn-get-started">Update Booking</a></label>
   </div>
+<div></div>
+  {% endif %}
 
 
 </div>

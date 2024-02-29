@@ -13,8 +13,9 @@
           <li><a class="nav-link scrollto" href="{% url "about_us" %}">About Us</a></li>
           {% if user.is_authenticated and user.is_customer %}
           <li><a class="nav-link scrollto" href="{% url "rooms" %}">Rooms</a></li>
-          <li><a class="nav-link scrollto" href="{% url "requested_bookings" %}">Requested Bookings</a></li>
+          <li><a class="nav-link scrollto" href="{% url "requested_bookings" %}">Requested </a></li>
           <li><a class="nav-link scrollto" href="{% url "pending_payments" %}">Pending Payments</a></li>
+          <li><a class="nav-link scrollto" href="{% url "completed_payments" %}">Confirmed </a></li>
           <li><a class="nav-link scrollto" href="{% url "my_cancellations" %}">My Cancellations</a></li>
           <li><a class="nav-link scrollto" href="{% url "logout_user" %}">Logout</a></li>
           <li><a class="nav-link scrollto">{{user.fullname}}</a></li>

@@ -1,0 +1,46 @@
+{% extends "customer/base.html" %}
+{% block content %}
+
+<br/><br/>
+
+  <br/>
+<div id = "bgcolor" class = "col">
+<div   class="container row g-3 col-6 offset-3 text-auto border border-3">
+  <div class="col-md-6 offset-3">
+    <h2 class = "text-center"><strong>Payment Details</strong></h2><br/>
+   </div>
+    <div>
+    <label for="room" class="form-label"><strong>Name:</strong> {{booking.customer.fullname}}</label>
+  </div>
+  <div>
+    <label for="room" class="form-label"><strong>Room:</strong> {{booking.room.name}}</label>
+  </div>
+  <div>
+    <label for="checkin" class="form-label"><strong>Check-in Date:</strong> {{booking.checkin_date}}</label>
+  </div>
+  <div>
+    <label for="checkout" class="form-label"><strong>Check-out Date:</strong> {{booking.checkout_date}}</label>
+  </div>
+  <div>
+    <label for="numberofrooms" class="form-label"><strong>Number of Rooms:</strong> {{booking.no_of_rooms}}</label>
+  </div>
+  <div>
+    <h3 for="parking" class="form-label"><strong>Total Price:</strong> €{{booking.dynamic_price}}</h3>
+  </div>
+  <div>
+    <form method="post" action="{% url 'payment' booking.id %}">
+    {%csrf_token%}
+    <button type = "submit" class = "btn btn-get-started">Proceed to Payment</btn>
+    </form>
+  </div>
+  <div>
+    <p class = 'text-danger'>*Customers are required to pay 50% in advance. This amount is non-refundable.</div>
+  <div>
+  </div>
+</div>
+</div>
+
+{% endblock content %}
+
+
+

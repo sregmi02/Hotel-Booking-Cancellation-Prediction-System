@@ -14,8 +14,11 @@ urlpatterns = [
     path('cancel_booking/<int:pk>', views.cancel_booking, name = 'cancel_booking'),
     path('update_booking/<int:pk>', views.update_booking, name = 'update_booking'),
     path('booking_form/<int:pk>',views.booking_form, name = "booking_form"),
+    path('booking_error',views.booking_form, name = "booking_error"),
     path('pending_payments/',views.pending_payments, name = "pending_payments"),
+    path('completed_payments/', views.completed_payments, name = "completed_payments"),
     path('payment/<int:pk>',views.payment, name = 'payment'),
     path('payment_success', views.payment_success, name = 'payment_success'),
     path('payment_failed', views.payment_failed, name = 'payment_failed'),
+
 ]

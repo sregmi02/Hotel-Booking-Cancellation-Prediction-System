@@ -1,13 +1,15 @@
 {% extends "employee/base_emp.html" %}
 {% block content %}
 <br><br>
-<div>
+<div class = "text-center">
+  <h1>{{booking.id}}</h1>
     {% if result == 'unlikely to cancel' %}
-    <h1 style=" color: rgb(88, 180, 88); font-weight: 900;">
-      <i class="fas fa-swimmer"></i> Unlikely to Cancel!</h1>
+    <h1 style=" color: rgb(88, 180, 88);">
+      This booking is unlikely to be cancelled!</h1>
     {% elif result == 'likely to cancel' %}
-    <h1 style="color: rgb(212, 85, 85); font-weight: 900;">
-      <i class="fas fa-skull"></i> Likely to Cancel!</h1>
+    <h1 style="color: rgb(212, 85, 85);">
+      This booking is likely to be cancelled!</h1>
     {% endif %}
+    <a href = "{% url "pending_bookings" %}" class = "btn-get-started">Return to Home</a>
   </div>
   {% endblock content %}

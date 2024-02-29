@@ -73,8 +73,13 @@ class BookingForm(forms.ModelForm):
         no_of_children = cleaned_data.get('no_of_children')
         no_of_adults = cleaned_data.get('no_of_adults')
         no_of_days = (checkout_date- checkin_date).days
-        if(no_of_days > 25):
-            self.add_error("checkout_date", "Bookings can be made for 25 days only")
+        booking_date = datetime.now().date()
+        lead_time = (checkin_date - booking_date).days
+        print(f'Lead Time: {lead_time}')
+        if (lead_time > 365):
+            self.add_error("checkin_date", "Bookings cannot be made more than a year ahead of arrival.")
+        # if(no_of_days > 25):
+        #     self.add_error("checkout_date", "Bookings can be made for 25 days only")
         if checkin_date and checkin_date < datetime.now().date():
             self.add_error("checkin_date","Checkin date cannot be in the past")
         if checkout_date and checkout_date < checkin_date:
@@ -83,6 +88,8 @@ class BookingForm(forms.ModelForm):
             self.add_error("no_of_children", "Number of Children cannot be negative")
         if no_of_adults > 10:
             self.add_error("no_of_adults", "This Value cannot be greater than 10")
+        if no_of_adults < 1:
+            self.add_error("no_of_adults", "This Value cannot be less than 1")
         if no_of_children > 10:
             self.add_error("no_of_children", "This Value cannot be greater than 10")
         return cleaned_data

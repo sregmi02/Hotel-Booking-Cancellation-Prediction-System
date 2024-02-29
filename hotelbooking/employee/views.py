@@ -7,9 +7,11 @@ from customer.models import PendingAlert
 from shared.models import Booking
 from django.contrib.auth.decorators import login_required
 from employee.forms import BookingForm
+from .decorators import employee_required
 import pickle 
 import pandas as pd
 import sys
+from datetime import datetime
 sys.path.append(r'C:\Users\sssre\Documents\CSIT VII\Final Year Project\model')
 
 # Create your views here.
@@ -23,7 +25,7 @@ def login_emp(request):
             user = form.get_user()
             login(request, user)
             messages.success(request, 'Logged In')
-            return redirect('home_emp')
+            return redirect('pending_bookings')
         else:
             messages.success(request, "username or password incorrect")
             return redirect('login_emp')
@@ -43,7 +45,7 @@ def register_emp(request):
             )
             login(request, user)  # Automatically log in the user after registration
             messages.success(request, "Logged In")
-            return redirect('home_emp')  # Redirect to employee dashboard or another page
+            return redirect('pending_bookings')  # Redirect to employee dashboard or another page
     else:
         form = EmployeeRegistrationForm()
     return render(request, 'employee/register_emp.html', {'form': form})
@@ -53,27 +55,27 @@ def logout_emp(request):
     messages.success(request, "Logged Out")
     return redirect ('home_emp')
 
-@login_required(login_url="login_emp")
+@employee_required
 def pending_bookings(request):
     bookings = Booking.objects.filter(processed = False, status = None)
     return render(request, 'employee/pending_bookings.html', {'bookings':bookings})
 
-@login_required(login_url="login_emp")
+@employee_required
 def processed_bookings(request):
     bookings = Booking.objects.filter(processed = True, status = None)
     return render(request, 'employee/processed_bookings.html', {'bookings':bookings})
 
-@login_required(login_url="login_emp")
+@employee_required
 def confirmed_bookings(request):
     bookings = Booking.objects.filter(status = True)
     return render(request, 'employee/confirmed_bookings.html', {'bookings':bookings})
 
-@login_required(login_url="login_emp")
+@employee_required
 def cancelled_bookings(request):
     bookings = Booking.objects.filter(status = False)
     return render(request, 'employee/cancelled_bookings.html', {'bookings':bookings})
 
-@login_required(login_url="login_emp")
+@employee_required
 def booking_details_emp(request, pk):
     booking = Booking.objects.get(id = pk)
     # form = BookingForm(request.POST, instance = booking)
@@ -86,7 +88,7 @@ def booking_details_emp(request, pk):
     #     form = BookingForm(instance = booking)  
     return render(request, 'employee/booking_details_emp.html', {'booking': booking})
 
-@login_required(login_url="login_emp")
+@employee_required
 def customer_list(request):
     customer = CustomUser.objects.filter(is_customer = True)
     return render (request, 'employee/customer_list.html', {'customer':customer})
@@ -166,8 +168,8 @@ def result(request,pk):
     no_of_previous_bookings_not_canceled = int(booking.customer.previous_bookings_not_cancelled)
     no_of_special_requests = int(booking.no_of_special_requests)
     lt = int(booking.lead_time)
-    lead_time = ((lt-84.25)/82.32) #standardizing
-    ap = int(booking.room.price)
+    lead_time = (((lt-84.25)/82.32)) #standardizing
+    ap = int(booking.dynamic_price)
     avg_price_per_room = ((ap-105.78)/32.39) #standardizing
     
     result = getPredictions(no_of_adults, no_of_children, no_of_weekend_nights, no_of_week_nights, type_of_meal_plan,
@@ -185,20 +187,37 @@ def result(request,pk):
     booking.save()
     
     print(result)
-    return render(request, 'employee/result.html', {'result':result})
+    return render(request, 'employee/booking_details_emp.html', {'booking':booking})
 
 def checkin_booking(request, pk):
     booking = Booking.objects.get(id = pk)
-    booking.status = True
-    booking.processed = True
-    booking.save()
-    messages.success(request, f'Booking (ID: {booking.id}) by {booking.customer.fullname} added to Confirmed Bookings')
-    return redirect('confirmed_bookings')
+    if (booking.checkin_date <= datetime.now().date()):
+        print(booking.checkin_date)
+        print(datetime.now().date())
+        print("True")
+        booking.status = True
+        booking.processed = True
+        booking.save()
+        messages.success(request, f'Booking (ID: {booking.id}) by {booking.customer.fullname} added to Confirmed Bookings')
+        return redirect('confirmed_bookings')
+    else:
+        print("False")
+        print(booking.id)
+        print(booking.checkin_date)
+        print(datetime.now().date())
+        messages.success(request, 'Checkin date has not arrived yet')
+        return redirect('processed_bookings')
 
 def not_checkin_booking(request, pk):
     booking = Booking.objects.get(id = pk)
-    booking.status = False
-    booking.processed = True
-    booking.save()
-    messages.success(request, f'Booking (ID: {booking.id}) by {booking.customer.fullname} added to Cancelled Bookings')
-    return redirect('cancelled_bookings')
+    print(booking.id)
+    if (booking.checkin_date <= datetime.now().date()):
+        booking.status = False
+        booking.processed = True
+        booking.save()
+        messages.success(request, f'Booking (ID: {booking.id}) by {booking.customer.fullname} added to Cancelled Bookings')
+        return redirect('cancelled_bookings')
+    else:
+        messages.success(request, 'Checkin date has not arrived yet')
+        return redirect('processed_bookings')
+

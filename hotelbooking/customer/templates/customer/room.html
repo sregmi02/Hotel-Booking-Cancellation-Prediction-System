@@ -20,10 +20,13 @@
 
         <div class="col-lg-4">
           <div class="portfolio-info">
-            <h2>{{room.name}}</h2>
+            <h2><b>{{room.name}}</b></h2>
             <p>
               {{room.description}}
             </p>
+            <p><b>Maximum Capacity:</b>{{room.max_capacity}}</p>
+            <p><b>Price: </b>${{room.price}}</p>
+            <p class = 'text-danger fs-6 fw-lighter fst-italic'>*The displayed prices are subject to change based on your selected date of arrival.*</p>
           </div>
           <br/><br/>
           <a href = "{% url "booking_form" room.id  %}" class = "col-4 offset-4 btn btn-get-started scrollto">Book Room</a>
