@@ -50,13 +50,13 @@ class BookingForm(forms.ModelForm):
     
     class Meta:
         model = Booking
-        fields = ['no_of_adults','no_of_children','checkin_date','checkout_date','meal_plan','car_parking','branch','children_meal','city_map','tour_guide','airport_pickup','wheelchair']
+        fields = ['no_of_adults','no_of_children','checkin_date','checkout_date','meal_plan','car_parking','children_meal','city_map','tour_guide','airport_pickup','wheelchair']
         widgets = {
             'no_of_adults' : forms.NumberInput(attrs = {'class': 'form-control'}),
             'no_of_children' : forms.NumberInput(attrs = {'class': 'form-control'}),
             'meal_plan' : forms.Select(attrs = {'class': 'form-control'}),
             'car_parking' : forms.CheckboxInput(attrs = {'class': 'form-check-input'}),
-            'branch' : forms.Select(attrs = {'class': 'form-control'}),
+            # 'branch' : forms.Select(attrs = {'class': 'form-control'}),
             'checkin_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'checkout_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'children_meal': forms.CheckboxInput(attrs = {'class': 'form-check-input'}),

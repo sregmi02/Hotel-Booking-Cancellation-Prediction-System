@@ -43,9 +43,6 @@
     <label for="meal" class="form-label"><strong>Meal Plan:</strong> {{booking.meal_plan}}</label>
   </div>
   <div class="col-md-6">
-    <label for="branch" class="form-label"><strong>Branch:</strong> {{booking.branch}}</label>
-  </div>
-  <div class="col-md-6">
     <label for="numberofrooms" class="form-label"><strong>Number of Rooms:</strong> {{booking.no_of_rooms}}</label>
   </div>
   <div class="col-md-6">
@@ -76,9 +73,15 @@
     <label for="parking" class="form-label"><strong>Price:</strong>{{booking.dynamic_price}}</label>
   </div>
   {%if  booking.processed == True%}
+  {% if booking.prediction.prediction_status%}
   <div class="col-md-6 offset-3">
-    <h3><strong>{{booking.prediction_status|yesno:"'Likely to Cancel','Unikely to Cancel'"}}</strong></h3>
+    <h3><strong class = 'text-danger'>Likely to Cancel</strong></h3>
   </div>
+  {% else %}
+  <div class="col-md-6 offset-3">
+    <h3><strong class = 'text-success'>Unikely to Cancel</strong></h3>
+  </div>
+  {% endif %}
   {% endif %}
 {% comment %} <div class="col-md-12">
     <form method = 'POST'>

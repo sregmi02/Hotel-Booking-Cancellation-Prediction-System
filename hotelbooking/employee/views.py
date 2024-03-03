@@ -53,7 +53,7 @@ def register_emp(request):
 def logout_emp(request):
     logout(request)
     messages.success(request, "Logged Out")
-    return redirect ('home_emp')
+    return redirect ('login_emp')
 
 @employee_required
 def pending_bookings(request):
@@ -169,7 +169,7 @@ def result(request,pk):
     no_of_special_requests = int(booking.no_of_special_requests)
     lt = int(booking.lead_time)
     lead_time = (((lt-84.25)/82.32)) #standardizing
-    ap = int(booking.dynamic_price)
+    ap = int(booking.dynamic_price/booking.no_of_rooms)
     avg_price_per_room = ((ap-105.78)/32.39) #standardizing
     
     result = getPredictions(no_of_adults, no_of_children, no_of_weekend_nights, no_of_week_nights, type_of_meal_plan,
@@ -177,10 +177,10 @@ def result(request,pk):
                    repeated_guest, no_of_previous_cancellations , no_of_previous_bookings_not_canceled,
                    no_of_special_requests, lead_time, avg_price_per_room)
     if result == 'unlikely to cancel':
-        booking.prediction_status = False
+        booking.set_prediction_status(False)
         booking.advance = 0.25*float(booking.dynamic_price)
     elif result == 'likely to cancel':
-        booking.prediction_status = True
+        booking.set_prediction_status(True)
         booking.advance = 0.5*float(booking.dynamic_price)
     booking.processed = True
     PendingAlert.objects.create(customer = booking.customer, message = f"Your Booking (ID: {booking.id}) has been processed. Please proceed to payment.")
@@ -191,21 +191,25 @@ def result(request,pk):
 
 def checkin_booking(request, pk):
     booking = Booking.objects.get(id = pk)
-    if (booking.checkin_date <= datetime.now().date()):
-        print(booking.checkin_date)
-        print(datetime.now().date())
-        print("True")
-        booking.status = True
-        booking.processed = True
-        booking.save()
-        messages.success(request, f'Booking (ID: {booking.id}) by {booking.customer.fullname} added to Confirmed Bookings')
-        return redirect('confirmed_bookings')
+    if (booking.paid):
+        if (booking.checkin_date <= datetime.now().date()):
+            print(booking.checkin_date)
+            print(datetime.now().date())
+            print("True")
+            booking.status = True
+            booking.processed = True
+            booking.save()
+            messages.success(request, f'Booking (ID: {booking.id}) by {booking.customer.fullname} added to Confirmed Bookings')
+            return redirect('confirmed_bookings')
+        else:
+            print("False")
+            print(booking.id)
+            print(booking.checkin_date)
+            print(datetime.now().date())
+            messages.success(request, f'Checkin date for Booking (ID: {booking.id}) has not arrived yet')
+            return redirect('processed_bookings')
     else:
-        print("False")
-        print(booking.id)
-        print(booking.checkin_date)
-        print(datetime.now().date())
-        messages.success(request, 'Checkin date has not arrived yet')
+        messages.success(request, f'The Booking (ID: {booking.id}) has not been paid for')
         return redirect('processed_bookings')
 
 def not_checkin_booking(request, pk):

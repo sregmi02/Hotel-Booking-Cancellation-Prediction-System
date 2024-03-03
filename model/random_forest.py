@@ -3,7 +3,7 @@ import numpy as np
 from collections import Counter
 
 class RandomForest:
-    def __init__(self, n_trees=10, max_depth=10, min_samples_split=100, n_features=None):
+    def __init__(self, n_features,n_trees = 5, max_depth = 15, min_samples_split = 50):
         self.n_trees = n_trees
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
@@ -20,7 +20,7 @@ class RandomForest:
         return samples_x,samples_y
     
     
-    def train_model(self, X, y):
+    def fit(self, X, y):
         i =0
         if len(self.trees)>0:
             self.trees=[]
@@ -32,7 +32,7 @@ class RandomForest:
                 min_samples_split = self.min_samples_split,
                 max_depth = self.max_depth)
             sample_x, sample_y = self._sample(X, y)
-            tree.train_model(sample_x, sample_y)
+            tree.fit(sample_x, sample_y)
             self.trees.append(tree)
             tree_built += 1
             i += 1
@@ -54,3 +54,5 @@ class RandomForest:
             predictions.append(counter.most_common(1)[0][0])
         pred = int(predictions[0])
         return pred
+    
+ 

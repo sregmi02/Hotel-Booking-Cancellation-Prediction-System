@@ -3,7 +3,7 @@
 <div class = 'container'>
     <br/><br/>
     <div class = "row">
-    <div class = 'col-4 offset-4'><h1>Completed Bookings</h1></div>
+    <div class = 'col-4 offset-4'><h1>Confirmed Bookings</h1></div>
     </div>
     <br/><br/>
     <div class = "row">
@@ -16,6 +16,7 @@
         <th scope ="col">Customer Name</th>
         <th scope="col">Room</th>
         <th scope="col">Booking Date</th>
+        <th scope="col">Booking Status</th>
       </tr>
     </thead>
     <tbody>
@@ -26,7 +27,7 @@
         <td>{{booking.customer.fullname}}</td>
         <td>{{booking.room.name}}</td>
         <td>{{booking.booking_date}}</td>
-        <td>{{booking.status}}
+        <td>{{booking.status|yesno:'Not Cancelled, Cancelled'}}</td>
         
       </tr>
       {% endfor %}

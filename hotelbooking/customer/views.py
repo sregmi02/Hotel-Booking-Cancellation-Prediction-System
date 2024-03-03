@@ -17,7 +17,7 @@ def about(request):
 
 @customer_required
 def rooms(request):
-        rooms = Room.objects.all()
+        rooms = Room.objects.all().order_by('price')
         return render(request, 'customer/rooms.html', {'rooms': rooms })
 
 def login_user(request):
@@ -81,7 +81,7 @@ def booking_form(request, pk):
             checkout_date = form.cleaned_data['checkout_date']
             meal_plan = form.cleaned_data['meal_plan']
             car_parking = form.cleaned_data['car_parking']
-            branch = form.cleaned_data['branch']
+            # branch = form.cleaned_data['branch']
             children_meal= form.cleaned_data['children_meal']
             city_map = form.cleaned_data['city_map']
             tour_guide =  form.cleaned_data['tour_guide']
@@ -96,7 +96,6 @@ def booking_form(request, pk):
                 checkout_date = checkout_date,
                 meal_plan = meal_plan,
                 car_parking = car_parking,
-                branch = branch, 
                 children_meal = children_meal,
                 city_map = city_map,
                 tour_guide = tour_guide,

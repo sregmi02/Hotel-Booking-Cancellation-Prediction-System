@@ -55,7 +55,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=255, unique = True)
     fullname = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=15, blank=True, null=True, validators=[RegexValidator(regex=r'^\d+$', message='Phone number must contain only digits.')])
+    phone_number = models.CharField(max_length=10, blank=True, null=True, validators=[RegexValidator(regex=r'^\d+$', message='Phone number must contain only digits.')])
     is_customer = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
     repeated_guest = models.BooleanField(null  = True, default = False)
@@ -79,20 +79,23 @@ class Room(models.Model):
     def __str__(self):
         return self.name
 
+class Prediction(models.Model):
+    prediction_status = models.BooleanField(default=None, null=True)
+
 class Booking(models.Model):
     MealPlan = (
         ('Not Selected', 'None'),
-        ('Meal Plan 1', 'Dinner'),
+        ('Meal Plan 1', 'Breakfast'),
         ('Meal Plan 2', 'Dinner and Breakfast'),
         ('Meal Plan 3', 'Dinner, Breakfast, and Lunch'),
     )
-    Branch = (
-        ('Branch 1', 'Portugal'),
-        ('Branch 2', 'Barcelona'),
-        ('Branch 3', 'Lisbon'),
-        ('Branch 4', 'Seville'),
-        ('Branch 5', 'Valencia'),
-    )
+    # Branch = (
+    #     ('Branch 1', 'Portugal'),
+    #     ('Branch 2', 'Barcelona'),
+    #     ('Branch 3', 'Lisbon'),
+    #     ('Branch 4', 'Seville'),
+    #     ('Branch 5', 'Valencia'),
+    # )
     CheckedInStatus = (
         ('True','Checked In'),
         ('False','Not Checked In'),
@@ -100,6 +103,7 @@ class Booking(models.Model):
 
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    prediction = models.OneToOneField(Prediction, on_delete=models.CASCADE, null = True)
     no_of_rooms = models.PositiveIntegerField(default=1)
     no_of_adults = models.PositiveIntegerField(default = 1)
     no_of_children = models.IntegerField(default = 0)
@@ -114,7 +118,7 @@ class Booking(models.Model):
     lead_time = models.IntegerField(blank = True, null = True)
     meal_plan = models.CharField(max_length=255, choices = MealPlan, default = 'None')
     car_parking = models.BooleanField(default = False)
-    branch = models.CharField(max_length=255, choices=Branch, default ='Branch 1')
+    # branch = models.CharField(max_length=255, choices=Branch, default ='Branch 1')
     children_meal = models.BooleanField(default = False, null = True)
     city_map = models.BooleanField(default = False, null = True)
     tour_guide = models.BooleanField(default = False, null = True)
@@ -127,20 +131,19 @@ class Booking(models.Model):
     processed = models.BooleanField(default = False)
     paid = models.BooleanField(default = False)
     checked_in_status = models.BooleanField(default = None, null = True)
-    prediction_status = models.BooleanField(default = None, null = True)
     stripe_checkout_id = models.CharField(max_length = 500, null = True)
     def calculateprice(self):
         price = float(self.room.price)
         arrival_month = self.checkin_date.month
 
-        if arrival_month in [12,1,2]:
+        if arrival_month in [1,2]:
+            price_multiplier = 0.90
+        elif arrival_month in [3,4,5,6,7]:
             price_multiplier = 1
-        elif arrival_month in [3,4,5]:
-            price_multiplier = 0.9
-        elif arrival_month in [6,7,8]:
-            price_multiplier = 1.75
+        elif arrival_month in [8,9,10]:
+            price_multiplier = 1.25
         else:
-            price_multiplier = 1
+            price_multiplier = 1.20
         date_price = price*price_multiplier
 
         final_price = date_price*self.no_of_rooms
@@ -153,6 +156,10 @@ class Booking(models.Model):
         no_of_special_requests = sum (1 for option in selected_requests if option)
         return no_of_special_requests
 
+    def set_prediction_status(self, status):
+        prediction = Prediction.objects.create(prediction_status=status)
+        self.prediction = prediction
+        self.save()
 
     def save(self, *args, **kwargs):
         self.no_of_days = (self.checkout_date - self.checkin_date).days

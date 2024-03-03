@@ -46,9 +46,6 @@
   <div class="col-md-6">
     <label for="parking" class="form-label"><strong>Payment Status: </strong>{{booking.paid|yesno:"Paid,Not Paid"}}</label>
   </div>
-  <div class="col-md-6">
-    <label for="parking" class="form-label"><strong>Active Booking: </strong>{{booking.customer.pending_status|yesno:"Yes,No"}}</label>
-  </div>
   
 {% if booking.paid == False %}
   <div class="col-12">

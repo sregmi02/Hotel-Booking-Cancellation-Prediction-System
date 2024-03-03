@@ -21,7 +21,7 @@ class Node:
 
 
 class DecisionTree:
-    def __init__(self, min_samples_split=100, max_depth=10, n_features=None):
+    def __init__(self, n_features, min_samples_split=50, max_depth =15):
         self.min_samples_split=min_samples_split
         self.max_depth=max_depth
         self.n_features=n_features
@@ -54,7 +54,13 @@ class DecisionTree:
     
     def _calculate_best_split(self,feature,label):
         # initializing the values
-        best_split = {}
+        best_split = {
+        "feature_index": None,
+        "threshold": None,
+        "left": None,
+        "right": None,
+        "information_gain": -1
+        }
         best_information_gain = -1
         (_,columns) = feature.shape
         # calculating best split
@@ -83,7 +89,8 @@ class DecisionTree:
                             "information_gain":information_gain
                         }
                         best_information_gain = information_gain
-        print("Splitted Column:{0}".format(self.n_features[best_split['feature_index']]))
+        if best_split["feature_index"] is not None:
+            print("Splitted Column: {0}".format(self.n_features[best_split['feature_index']]))
         return best_split
     
     def _grow_tree(self, X, y, depth=0):
@@ -96,7 +103,7 @@ class DecisionTree:
         # condition1 checks whether there is number of rows greater than or equal to minimun samples to split
         condition1 = (num_rows >= self.min_samples_split)
         # condition2 checks whether the current depth is less than or equal to max depth defined
-        condition2 = (depth <= self.max_depth)
+        condition2 = (depth < self.max_depth)
         # checking both conditions to build the tree
         if condition1 and condition2:
            #selecting the best split of the current depth
@@ -105,16 +112,16 @@ class DecisionTree:
             if (splitted_data['information_gain']) > 0:
               # using recursion to determine left and right child of the tree
               # left child split
-                depth = depth+1
-                print("Left Split to level: {0}".format(depth))
+                new_depth = depth+1
+                print("Left Split to level: {0}".format(new_depth))
                 X_left = splitted_data['left'][:,:-1]
                 y_left = splitted_data['left'][:,-1]
-                left_child = self._grow_tree(X_left,y_left,depth)
+                left_child = self._grow_tree(X_left,y_left,new_depth)
               # right child split
-                print("Right Split to level: {0}".format(depth))
+                print("Right Split to level: {0}".format(new_depth))
                 X_right = splitted_data['right'][:,:-1]
                 y_right = splitted_data['right'][:,-1]
-                right_child = self._grow_tree(X_right,y_right,depth)
+                right_child = self._grow_tree(X_right,y_right,new_depth)
               # after calculating returning the data to the previous iteration of recursion
                 return Node(
                       feature = splitted_data['feature_index'],
@@ -126,14 +133,14 @@ class DecisionTree:
         return Node(value=Counter(y).most_common(1)[0][0])
               
       
-    def train_model(self,X,y):
+    def fit(self,X,y):
         print("-----------------------------")
         print("Training Process Strated.")
         self.root = self._grow_tree(X,y)
               
               
     def _predict(self,x,tree):
-        if tree.value != None:
+        if tree.value !=None:
             print(int(tree.value))
             return tree.value
         feature = x[tree.feature]
@@ -151,3 +158,4 @@ class DecisionTree:
         self.n_features = n_features
         return [self._predict(x,self.root) for x in X]
     
+              
