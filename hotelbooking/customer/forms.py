@@ -6,11 +6,11 @@ from django.core.exceptions import ValidationError
 class CustomerRegistrationForm(UserCreationForm):
     username = forms.CharField(max_length=100, label = "", widget = forms.TextInput(attrs = {'class':'form-control', 'placeholder':'Username'}))
     fullname = forms.CharField(max_length=100, label = "", widget = forms.TextInput(attrs = {'class':'form-control', 'placeholder':'Full Name'}))
-    phone_number = forms.CharField(max_length=15, label = "",  required=False,  widget = forms.TextInput(attrs = {'class':'form-control', 'placeholder':'Phone Number'}))
+    # phone_number = forms.CharField(max_length=10, label = "",  required=False,  widget = forms.TextInput(attrs = {'class':'form-control', 'placeholder':'Phone Number'}))
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'username', 'fullname', 'phone_number', 'password1', 'password2']
+        fields = ['email', 'username', 'fullname','password1', 'password2']
     def __init__(self, *args, **kwargs):
         super(CustomerRegistrationForm, self).__init__(*args, **kwargs)  
         self.fields['email'].widget.attrs['class'] = 'form-control'

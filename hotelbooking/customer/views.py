@@ -54,7 +54,6 @@ def register_user(request):
                 username=form.cleaned_data['username'],
                 fullname=form.cleaned_data['fullname'],
                 password=form.cleaned_data['password1'],
-                phone_number=form.cleaned_data.get('phone_number'),
             )
             login(request, user)  # Automatically log in the user after registration
             messages.success(request, 'Successfully Registered')

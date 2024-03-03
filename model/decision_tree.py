@@ -38,8 +38,7 @@ class DecisionTree:
             if i > 0:
                 entropy += i*np.log2(i)
         return -(entropy)
-    
-    
+        
     def _information_gain(self, parent_node, left_child_node, right_child_node):
         # calculating number of probabilities of left and right child
         left_childs = len(left_child_node)/len(parent_node)
@@ -137,8 +136,8 @@ class DecisionTree:
         print("-----------------------------")
         print("Training Process Strated.")
         self.root = self._grow_tree(X,y)
-              
-              
+
+
     def _predict(self,x,tree):
         if tree.value !=None:
             print(int(tree.value))

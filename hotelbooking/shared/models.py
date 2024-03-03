@@ -6,24 +6,24 @@ from datetime import datetime, timedelta
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, username, fullname, password=None, phone_number=None, **extra_fields):
+    def create_user(self, email, username, fullname, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
-        user = self.model(email=email, username=username, fullname=fullname, phone_number=phone_number, **extra_fields)
+        user = self.model(email=email, username=username, fullname=fullname, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_customer(self, email, username, fullname, password=None, phone_number=None, **extra_fields):
+    def create_customer(self, email, username, fullname, password=None, **extra_fields):
         extra_fields.setdefault('is_customer', True)
         extra_fields.setdefault('is_staff', False)
-        return self.create_user(email, username, fullname, password, phone_number, **extra_fields)
+        return self.create_user(email, username, fullname, password, **extra_fields)
 
-    def create_employee(self, email, username, fullname, password=None, phone_number=None, **extra_fields):
+    def create_employee(self, email, username, fullname, password=None, **extra_fields):
         extra_fields.setdefault('is_employee', True)
         extra_fields.setdefault('is_staff', True)
-        return self.create_user(email, username, fullname, password, phone_number, **extra_fields)
+        return self.create_user(email, username, fullname, password, **extra_fields)
     
     def create_superuser(self, email, username, fullname, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -55,7 +55,6 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=255, unique = True)
     fullname = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=10, blank=True, null=True, validators=[RegexValidator(regex=r'^\d+$', message='Phone number must contain only digits.')])
     is_customer = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
     repeated_guest = models.BooleanField(null  = True, default = False)
