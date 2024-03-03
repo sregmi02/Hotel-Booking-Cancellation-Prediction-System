@@ -82,9 +82,9 @@ def booking_form(request, pk):
             meal_plan = form.cleaned_data['meal_plan']
             car_parking = form.cleaned_data['car_parking']
             # branch = form.cleaned_data['branch']
-            children_meal= form.cleaned_data['children_meal']
-            city_map = form.cleaned_data['city_map']
-            tour_guide =  form.cleaned_data['tour_guide']
+            city_tour_guide= form.cleaned_data['city_tour_guide']
+            room_amenities = form.cleaned_data['room_amenities']
+            jacuzzi =  form.cleaned_data['jacuzzi']
             airport_pickup =  form.cleaned_data['airport_pickup']
             wheelchair =  form.cleaned_data['wheelchair']
             Booking.objects.create(
@@ -96,9 +96,9 @@ def booking_form(request, pk):
                 checkout_date = checkout_date,
                 meal_plan = meal_plan,
                 car_parking = car_parking,
-                children_meal = children_meal,
-                city_map = city_map,
-                tour_guide = tour_guide,
+                city_tour_guide = city_tour_guide,
+                room_amenities= room_amenities,
+                jacuzzi = jacuzzi,
                 airport_pickup = airport_pickup,
                 wheelchair = wheelchair,
                 )

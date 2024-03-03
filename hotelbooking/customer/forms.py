@@ -50,7 +50,7 @@ class BookingForm(forms.ModelForm):
     
     class Meta:
         model = Booking
-        fields = ['no_of_adults','no_of_children','checkin_date','checkout_date','meal_plan','car_parking','children_meal','city_map','tour_guide','airport_pickup','wheelchair']
+        fields = ['no_of_adults','no_of_children','checkin_date','checkout_date','meal_plan','car_parking','city_tour_guide','room_amenities','jacuzzi','airport_pickup','wheelchair']
         widgets = {
             'no_of_adults' : forms.NumberInput(attrs = {'class': 'form-control'}),
             'no_of_children' : forms.NumberInput(attrs = {'class': 'form-control'}),
@@ -59,9 +59,9 @@ class BookingForm(forms.ModelForm):
             # 'branch' : forms.Select(attrs = {'class': 'form-control'}),
             'checkin_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'checkout_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'children_meal': forms.CheckboxInput(attrs = {'class': 'form-check-input'}),
-            'city_map': forms.CheckboxInput(attrs = {'class': 'form-check-input'}),
-            'tour_guide' : forms.CheckboxInput(attrs = {'class': 'form-check-input'}),
+            'city_tour_guide': forms.CheckboxInput(attrs = {'class': 'form-check-input'}),
+            'room_amenities': forms.CheckboxInput(attrs = {'class': 'form-check-input'}),
+            'jacuzzi' : forms.CheckboxInput(attrs = {'class': 'form-check-input'}),
             'airport_pickup' : forms.CheckboxInput(attrs = {'class': 'form-check-input'}),
             'wheelchair' : forms.CheckboxInput(attrs = {'class': 'form-check-input'}),
         }   

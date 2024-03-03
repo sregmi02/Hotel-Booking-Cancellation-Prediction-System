@@ -119,9 +119,9 @@ class Booking(models.Model):
     meal_plan = models.CharField(max_length=255, choices = MealPlan, default = 'None')
     car_parking = models.BooleanField(default = False)
     # branch = models.CharField(max_length=255, choices=Branch, default ='Branch 1')
-    children_meal = models.BooleanField(default = False, null = True)
-    city_map = models.BooleanField(default = False, null = True)
-    tour_guide = models.BooleanField(default = False, null = True)
+    city_tour_guide = models.BooleanField(default = False, null = True)
+    room_amenities = models.BooleanField(default = False, null = True)
+    jacuzzi = models.BooleanField(default = False, null = True)
     airport_pickup = models.BooleanField(default = False, null = True)
     wheelchair = models.BooleanField(default = False, null = True)
     no_of_special_requests = models.IntegerField(null = True)
@@ -152,7 +152,7 @@ class Booking(models.Model):
     
     def calculate_special_requests(self):
         # Calculate and return the number of selected special requests
-        selected_requests = [self.children_meal,self.city_map,self.tour_guide,self.airport_pickup,self.wheelchair]
+        selected_requests = [self.city_tour_guide,self.room_amenities,self.jacuzzi,self.airport_pickup,self.wheelchair]
         no_of_special_requests = sum (1 for option in selected_requests if option)
         return no_of_special_requests
 
