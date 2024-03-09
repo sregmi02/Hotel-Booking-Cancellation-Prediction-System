@@ -35,7 +35,7 @@
       var num_of_adults = parseInt(document.getElementById('id_no_of_adults').value);
       var num_of_children = parseInt(document.getElementById('id_no_of_children').value);
       if (num_of_adults > 0 && num_of_children >= 0){
-      var total = num_of_adults +  0.667*num_of_children
+      var total = num_of_adults + num_of_children
       var total_rooms = Math.ceil((total/{{room.max_capacity}}));
       document.getElementById('no_of_rooms').innerText =  total_rooms
 

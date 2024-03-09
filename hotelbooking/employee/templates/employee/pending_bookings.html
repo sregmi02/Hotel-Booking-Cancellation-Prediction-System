@@ -22,11 +22,12 @@
     <tbody>
         {% for booking in  bookings  %}
       <tr>
-        <td><a href = {% url "booking_details_emp" booking.id %}>{{booking.id}}</a></td>
+        <td>{{booking.id}}</td>
         <td>{{booking.customer.id}}</td>
         <td>{{booking.customer.fullname}}</td>
         <td>{{booking.room.name}}</td>
         <td>{{booking.booking_date}}</td>
+        <td><a class = 'btn btn-primary' href = {% url "booking_details_emp" booking.id %}>View</a></td>
         
         {% comment %} <td >
             <form method="post" action="{% url 'cancel_booking' booking.id %}">

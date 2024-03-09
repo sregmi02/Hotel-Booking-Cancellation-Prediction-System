@@ -57,8 +57,10 @@
             </div>
           </div>
         </td>
+        <td><a class = 'btn btn-primary' href = {% url "booking_details_emp" booking.id %}>View</a></td>
       </tr>
       {% endfor %}
+      
     </tbody>
   </table>
   {% else %}

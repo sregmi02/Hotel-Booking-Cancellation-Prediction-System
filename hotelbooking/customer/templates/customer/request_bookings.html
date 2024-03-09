@@ -22,15 +22,15 @@
     <tbody>
         {% for booking in  bookings  %}
       <tr>
-        <th scope="row"><a href = {% url "booking_details" booking.id %}>{{booking.id}}</a></th>
+        <th scope="row">{{booking.id}}</th>
         <td>{{booking.room.name}}</td>
         <td>{{booking.no_of_rooms}}</td>
         <td>{{booking.booking_date}}</td>
         <td class = 'text-center'>
+          <a class = 'btn btn-primary' href = {% url "booking_details" booking.id %}>View</a>
           <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal{{booking.id}}">
             Cancel
           </button>
-        
           <div class="modal fade" id="exampleModal{{booking.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{booking.id}}" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -51,7 +51,9 @@
               </div>
             </div>
           </div>
+        
         </td>
+
       </tr>
       
       {% endfor %}
